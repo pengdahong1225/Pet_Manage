@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/prefix1">
+        <file>image/用户.png</file>
+        <file>image/密码.png</file>
+        <file>image/logo.png</file>
+    </qresource>
+</RCC>

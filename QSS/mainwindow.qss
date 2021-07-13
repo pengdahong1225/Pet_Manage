@@ -1,0 +1,26 @@
+QMainWindow{
+    background-color:#555454;
+    border-color: #4e4e4e;   
+}
+QPushButton {       /*按钮样式*/
+    color: #ffffff;
+    background-color: #3a8efc;
+    border-radius:8px;
+    /*padding: 4px;
+    min-width: 65px;
+    min-height: 12px;*/
+}
+QPushButton:hover { /*鼠标接触样式*/
+    background-color: #3a8efc;
+}   
+QPushButton:pressed {   /*按下样式*/
+    background-color: rgb(224, 255, 205);
+    color: rgb(255, 0, 0);
+}
+QGroupBox{
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+QStatusBar{
+    color: beige;
+}
