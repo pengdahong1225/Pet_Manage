@@ -35,17 +35,20 @@ SOURCES += \
         login.cpp \
         main.cpp \
         mainwindow.cpp \
+        newadd.cpp \
         video.cpp
 
 HEADERS += \
         imysql.h \
         login.h \
         mainwindow.h \
+        newadd.h \
         video.h
 
 FORMS += \
         login.ui \
-        mainwindow.ui
+        mainwindow.ui \
+        newadd.ui
 
 INCLUDEPATH += D:\openCV\opencv\build\include \
                D:\openCV\opencv\build\include\opencv2

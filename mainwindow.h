@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include<QFile>
+#include<QSqlDatabase>
 #include"video.h"
 
 namespace Ui {
@@ -24,12 +25,17 @@ public slots:
     void finishedThreadBtnSlot();
     void recevie_ok(QImage image);
     void history_video();
+    void Init_CustManage();
+    void add_user();
+    void delete_user();
+    void edit_user();
 signals:
     void close_signal();
 private:
     Ui::MainWindow *ui;
     QFile CssFile;
     UdpThread *UDP_OBJ;
+    QSqlDatabase db;
 };
 
 #endif // MAINWINDOW_H

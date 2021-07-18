@@ -1,26 +1,45 @@
 QMainWindow{
-    background-color:#555454;
+    background-color:#f1fdff;
     border-color: #4e4e4e;   
 }
+
 QPushButton {       /*按钮样式*/
-    color: #ffffff;
-    background-color: #3a8efc;
-    border-radius:8px;
-    /*padding: 4px;
-    min-width: 65px;
-    min-height: 12px;*/
+    color: #fffafa;
+    background-color: #5a5a5a;
+    border-radius:7px;
 }
-QPushButton:hover { /*鼠标接触样式*/
-    background-color: #3a8efc;
-}   
 QPushButton:pressed {   /*按下样式*/
-    background-color: rgb(224, 255, 205);
-    color: rgb(255, 0, 0);
+    /*background-color: #fffafa;
+    color: #000000;*/
+    border-style: inset;
+    padding-left:3px;
+    /*上内边距为3像素，让按下时字向下移动3像素*/
+    padding-top:3px;
 }
+
 QGroupBox{
-    color: rgb(255, 255, 255);
+    color: rgb(29, 27, 27);
     font-weight: bold;
 }
 QStatusBar{
-    color: beige;
+    color: rgb(0, 0, 0);
+    font-size: large;
+}
+
+QTableWidget{
+    background:#FFFFFF;
+
+    font-size:20px;
+    font-family:"SimSun";
+    background-color:#EEF1F7;
+}
+QTableWidget::item
+{
+    border-bottom:1px solid #EEF1F7 ;
+    color: #00504c;
+}
+QTableWidget::item::selected
+{
+    color:red;
+    background:#c1d3f8;
 }

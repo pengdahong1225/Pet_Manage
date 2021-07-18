@@ -1,13 +1,17 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "imysql.h"
+#include "newadd.h"
 #include<opencv.h>
-#include <QFile>
-#include <QTextStream>
+#include<QFile>
+#include<QTextStream>
 #include<QKeyEvent>
 #include<QMessageBox>
 #include<QDebug>
 #include<QFileDialog>
 #include<opencv2/opencv.hpp>
+#include<QSqlQuery>
+
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
 #endif
@@ -19,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setWindowTitle("萌之苑管理系统");
+    this->setWindowTitle("管理员系统");
     this->setAttribute(Qt::WA_DeleteOnClose,true);//退出即析构
     ui->statusBar->showMessage("当前管理员：彭大宏/18048155008");
     video_status = -1;
@@ -38,19 +42,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->comboBox,psetpage,this,&MainWindow::set_stack);
     ui->stackedWidget->setCurrentIndex(0);
     connect(ui->pbn_history,&QPushButton::clicked,[&]()->void{
+                ui->comboBox->setCurrentIndex(0);
                 ui->stackedWidget->setCurrentIndex(4);
             });
     connect(ui->pbn_manage,&QPushButton::clicked,[&]()->void{
+                ui->comboBox->setCurrentIndex(0);
                 ui->stackedWidget->setCurrentIndex(5);
             });
     connect(ui->pbn_CustManage,&QPushButton::clicked,[&]()->void{
+                ui->comboBox->setCurrentIndex(0);
                 ui->stackedWidget->setCurrentIndex(6);
-            });
-    connect(ui->pbn_SerManage,&QPushButton::clicked,[&]()->void{
-                ui->stackedWidget->setCurrentIndex(7);
             });
     connect(ui->pbn_video,&QPushButton::clicked,this,&MainWindow::OpenVideo);
     connect(ui->pbn_his_video,&QPushButton::clicked,this,&MainWindow::history_video);
+    connect(ui->pbn_CustManage,&QPushButton::clicked,this,&MainWindow::Init_CustManage);
 }
 
 void MainWindow::set_stack(int page)
@@ -74,6 +79,7 @@ void MainWindow::OpenVideo()
     UDP_OBJ->start();
     video_status = 1;
     connect(this,&MainWindow::close_signal,UDP_OBJ,&UdpThread::close_slots);
+    ui->label_video->setText("加载中...");
     connect(ui->tbn_close,&QToolButton::clicked,[&](){
         video_status = 0;
         this->UDP_OBJ->m_udpSocket->abort();
@@ -116,6 +122,69 @@ void MainWindow::history_video()
         }
     }
     capture.release();
+}
+
+void MainWindow::Init_CustManage()
+{
+    ui->lineEdit_search->setPlaceholderText("输入姓名搜索");
+    ui->pbn_add->setIcon(QIcon("../image/add.png"));
+    ui->pbn_delete->setIcon(QIcon("../image/delete.png"));
+    ui->pbn_edit->setIcon(QIcon("../image/edit.png"));
+    QAction *action_search = new QAction(this);
+    action_search->setIcon(QIcon("../image/search.png"));
+    ui->lineEdit_search->addAction(action_search,QLineEdit::LeadingPosition);
+    ui->tableWidget->setColumnCount(6);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"姓名"<<"性别"<<"联系电话"
+                                               <<"邮箱"<<"是否使用中"<<"最近登录时间");
+    ui->tableWidget->setRowCount(15);
+    if(connect_sql(db))
+    {
+        QSqlQuery query(db);
+        query.exec("select * from pet_user");
+        QStringList user_list;
+        uint8_t row = 0;
+        while(query.next())
+        {
+            for(uint8_t col=0;col<6;col++)
+            {
+                user_list << query.value(col).toString();
+            }
+            for (uint8_t col=0;col<6;col++) {
+                ui->tableWidget->setItem(row,col,new QTableWidgetItem(user_list[col]));
+                ui->tableWidget->item(row,col)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            }
+            user_list.clear();
+            row++;
+        }
+    }
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(1,QHeaderView::ResizeToContents);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(4,QHeaderView::ResizeToContents);
+    db.close();
+
+    connect(ui->pbn_add,&QPushButton::clicked,this,&MainWindow::add_user);
+    connect(ui->pbn_delete,&QPushButton::clicked,this,&MainWindow::delete_user);
+    connect(ui->pbn_edit,&QPushButton::clicked,this,&MainWindow::edit_user);
+}
+
+void MainWindow::add_user()
+{
+    NewAdd *Obj_Add = new NewAdd(this);
+    Obj_Add->show();
+}
+
+void MainWindow::delete_user()
+{
+
+}
+
+void MainWindow::edit_user()
+{
+
 }
 MainWindow::~MainWindow()
 {

@@ -5,6 +5,7 @@
 #include<QByteArray>
 #include<QImage>
 #include<QVector>
+#include<opencv2/opencv.hpp>
 class UdpThread : public QThread
 {
     Q_OBJECT
@@ -13,6 +14,7 @@ public:
     ~UdpThread();
     QUdpSocket *m_udpSocket;
     QByteArray Combine_piece();
+    void Save_Video(QImage image);
 protected:
     void run();
 signals:
@@ -25,6 +27,8 @@ private:
     bool is_videoclose;
     QVector<QByteArray> vec_array;
     QImage to_image;
+    bool first_revice;
+    cv::VideoWriter *writer;
 };
 
 #endif // VIDEO_H
