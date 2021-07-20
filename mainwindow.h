@@ -5,6 +5,7 @@
 #include<QFile>
 #include<QSqlDatabase>
 #include"video.h"
+#include "newadd.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +30,7 @@ public slots:
     void add_user();
     void delete_user();
     void edit_user();
+    void Load_New();
 signals:
     void close_signal();
 private:
@@ -36,6 +38,7 @@ private:
     QFile CssFile;
     UdpThread *UDP_OBJ;
     QSqlDatabase db;
+    NewAdd *Obj_Add;
 };
 
 #endif // MAINWINDOW_H

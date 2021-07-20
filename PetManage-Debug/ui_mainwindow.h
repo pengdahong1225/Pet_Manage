@@ -601,7 +601,7 @@ public:
         retranslateUi(MainWindow);
 
         pbn_temperature->setDefault(false);
-        stackedWidget->setCurrentIndex(6);
+        stackedWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

@@ -9,7 +9,7 @@
 UdpThread::UdpThread(QObject *parent):QThread (parent)
 {
     m_udpSocket = new QUdpSocket(this);
-    m_udpSocket->bind(QHostAddress("192.168.101.9"),45454);
+    m_udpSocket->bind(QHostAddress("192.168.43.52"),45454);
     connect(m_udpSocket,&QUdpSocket::readyRead,this,&UdpThread::processPendingDatagram);
     is_videoclose = false;
     first_revice = true;
@@ -18,7 +18,6 @@ UdpThread::UdpThread(QObject *parent):QThread (parent)
 UdpThread::~UdpThread()
 {
     delete m_udpSocket;
-    qDebug()<<"析构";
 }
 void UdpThread::run()  //run()函数结束后发出 finished信号，代表线程执行结束
 {
@@ -46,7 +45,7 @@ void UdpThread::processPendingDatagram()//调用一次接收一次
         if(!to_image.isNull())
         {
             emit recevie_success(to_image);
-            this->Save_Video(to_image);
+            //this->Save_Video(to_image);
         }
     }
     else {
@@ -62,7 +61,7 @@ void UdpThread::processPendingDatagram()//调用一次接收一次
             if(!to_image.isNull())
             {
                 emit recevie_success(to_image);
-                this->Save_Video(to_image);
+                //this->Save_Video(to_image);
             }
             vec_array.clear();
         }

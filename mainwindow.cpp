@@ -1,7 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "imysql.h"
-#include "newadd.h"
 #include<opencv.h>
 #include<QFile>
 #include<QTextStream>
@@ -16,7 +15,7 @@
 #pragma execution_character_set("utf-8")
 #endif
 
-int video_status;/*-1关闭 1打开 0关闭请求*/
+int8_t video_status;/*-1关闭 1打开 0关闭请求*/
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -56,6 +55,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbn_video,&QPushButton::clicked,this,&MainWindow::OpenVideo);
     connect(ui->pbn_his_video,&QPushButton::clicked,this,&MainWindow::history_video);
     connect(ui->pbn_CustManage,&QPushButton::clicked,this,&MainWindow::Init_CustManage);
+    ui->lineEdit_search->setPlaceholderText("输入姓名搜索");
+    ui->pbn_add->setIcon(QIcon("../image/add.png"));
+    ui->pbn_delete->setIcon(QIcon("../image/delete.png"));
+    ui->pbn_edit->setIcon(QIcon("../image/edit.png"));
+    QAction *action_search = new QAction(this);
+    action_search->setIcon(QIcon("../image/search.png"));
+    ui->lineEdit_search->addAction(action_search,QLineEdit::LeadingPosition);
+    ui->tableWidget->setColumnCount(6);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"姓名"<<"性别"<<"联系电话"
+                                               <<"邮箱"<<"是否使用中"<<"最近登录时间");
 }
 
 void MainWindow::set_stack(int page)
@@ -126,23 +137,12 @@ void MainWindow::history_video()
 
 void MainWindow::Init_CustManage()
 {
-    ui->lineEdit_search->setPlaceholderText("输入姓名搜索");
-    ui->pbn_add->setIcon(QIcon("../image/add.png"));
-    ui->pbn_delete->setIcon(QIcon("../image/delete.png"));
-    ui->pbn_edit->setIcon(QIcon("../image/edit.png"));
-    QAction *action_search = new QAction(this);
-    action_search->setIcon(QIcon("../image/search.png"));
-    ui->lineEdit_search->addAction(action_search,QLineEdit::LeadingPosition);
-    ui->tableWidget->setColumnCount(6);
-    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"姓名"<<"性别"<<"联系电话"
-                                               <<"邮箱"<<"是否使用中"<<"最近登录时间");
-    ui->tableWidget->setRowCount(15);
     if(connect_sql(db))
     {
         QSqlQuery query(db);
         query.exec("select * from pet_user");
+        int size = query.size();
+        ui->tableWidget->setRowCount(size);
         QStringList user_list;
         uint8_t row = 0;
         while(query.next())
@@ -173,8 +173,32 @@ void MainWindow::Init_CustManage()
 
 void MainWindow::add_user()
 {
-    NewAdd *Obj_Add = new NewAdd(this);
+    Obj_Add = new NewAdd(this);
+    connect(Obj_Add,&NewAdd::Load_Ok,this,&MainWindow::Load_New);
     Obj_Add->show();
+}
+
+void MainWindow::Load_New()
+{
+    QStringList new_user;
+    new_user << Obj_Add->user_in.name;
+    if(Obj_Add->user_in.sex == 1)
+        new_user << "男";
+    else
+        new_user << "女";
+    new_user << Obj_Add->user_in.phone_number << Obj_Add->user_in.postbox << QString("否");
+    //入数据库
+    if(connect_sql(db))
+    {
+        QSqlQuery query(db);
+        QString sql = QString("insert into pet_user(Uname,Usex,UPhone,Upostbox,Useing) values('%1','%2','%3','%4','%5')").arg(new_user[0]).arg(new_user[1]).arg(new_user[2]).arg(new_user[3]).arg(new_user[4]);
+        bool ret = query.exec(sql);
+        qDebug()<<ret;
+        Obj_Add->close();
+    }
+    else {
+        QMessageBox::warning(this,"插入","请检查网络",QMessageBox::Ok);
+    }
 }
 
 void MainWindow::delete_user()
@@ -186,6 +210,7 @@ void MainWindow::edit_user()
 {
 
 }
+
 MainWindow::~MainWindow()
 {
     delete ui;

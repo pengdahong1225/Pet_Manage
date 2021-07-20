@@ -16,6 +16,10 @@ QPushButton:pressed {   /*按下样式*/
     /*上内边距为3像素，让按下时字向下移动3像素*/
     padding-top:3px;
 }
+QToolButton{
+    background-color: cadetblue;
+    color: #fffafa;
+}
 
 QGroupBox{
     color: rgb(29, 27, 27);
