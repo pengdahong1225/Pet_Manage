@@ -11,7 +11,6 @@ NewAdd::NewAdd(QWidget *parent) :
     this->setWindowTitle("新添用户");
     this->setAttribute(Qt::WA_DeleteOnClose,true);  //退出即析构
     ui->pushButton->setStyleSheet("background-color: #114357");
-
     connect(ui->pushButton,&QPushButton::clicked,this,&NewAdd::Load);
 }
 

@@ -10,6 +10,7 @@
 #include<QFileDialog>
 #include<opencv2/opencv.hpp>
 #include<QSqlQuery>
+#include<QToolTip>
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
@@ -59,11 +60,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pbn_add->setIcon(QIcon("../image/add.png"));
     ui->pbn_delete->setIcon(QIcon("../image/delete.png"));
     ui->pbn_edit->setIcon(QIcon("../image/edit.png"));
+    ui->pbn_falsh->setIcon(QIcon("../image/刷新.png"));
     QAction *action_search = new QAction(this);
     action_search->setIcon(QIcon("../image/search.png"));
     ui->lineEdit_search->addAction(action_search,QLineEdit::LeadingPosition);
     ui->tableWidget->setColumnCount(6);
-    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);//不可编辑
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"姓名"<<"性别"<<"联系电话"
                                                <<"邮箱"<<"是否使用中"<<"最近登录时间");
@@ -169,6 +171,8 @@ void MainWindow::Init_CustManage()
     connect(ui->pbn_add,&QPushButton::clicked,this,&MainWindow::add_user);
     connect(ui->pbn_delete,&QPushButton::clicked,this,&MainWindow::delete_user);
     connect(ui->pbn_edit,&QPushButton::clicked,this,&MainWindow::edit_user);
+    connect(ui->pbn_falsh,&QPushButton::clicked,this,&MainWindow::flash_user);
+
 }
 
 void MainWindow::add_user()
@@ -192,28 +196,120 @@ void MainWindow::Load_New()
     {
         QSqlQuery query(db);
         QString sql = QString("insert into pet_user(Uname,Usex,UPhone,Upostbox,Useing) values('%1','%2','%3','%4','%5')").arg(new_user[0]).arg(new_user[1]).arg(new_user[2]).arg(new_user[3]).arg(new_user[4]);
-        bool ret = query.exec(sql);
-        qDebug()<<ret;
+        query.exec(sql);
         Obj_Add->close();
-    }
-    else {
-        QMessageBox::warning(this,"插入","请检查网络",QMessageBox::Ok);
     }
 }
 
 void MainWindow::delete_user()
 {
-
+    int rowindex = ui->tableWidget->currentRow();
+    if(rowindex == -1)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("删除");
+        msgBox.setText("选择一个成员进行删除");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+    }
+    else {
+        QString name =ui->tableWidget->item(ui->tableWidget->currentRow(),0)->text();\
+        qDebug()<<name;
+        if(db.open())
+        {
+            drop_user(name);
+            db.close();
+        }
+        else {
+            if(connect_sql(db))
+            {
+                drop_user(name);
+                db.close();
+            }
+        }
+        ui->tableWidget->removeRow(rowindex);
+    }
 }
 
 void MainWindow::edit_user()
 {
+    current_item = ui->tableWidget->currentItem();
+    if(current_item == nullptr)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("编辑");
+        msgBox.setText("选择一个元素进行编辑");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+    }
+    else {
+        ui->tableWidget->openPersistentEditor(current_item);
+        connect(ui->tableWidget,&QTableWidget::itemChanged,this,&MainWindow::close_Editor);
+        //通知数据库修改编辑后的数据
 
+    }
+}
+void MainWindow::close_Editor()
+{
+    ui->tableWidget->closePersistentEditor(current_item);
+    disconnect(ui->tableWidget,&QTableWidget::itemChanged,this,&MainWindow::close_Editor);
+}
+void MainWindow::flash_user()
+{
+    if(db.open())
+    {
+        ui->tableWidget->clear();
+        this->show_users();
+        db.close();
+    }
+    else {
+        if(connect_sql(db))
+        {
+            ui->tableWidget->clear();
+            this->show_users();
+            db.close();
+        }
+    }
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::show_users()
+{
+    ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"姓名"<<"性别"<<"联系电话"
+                                               <<"邮箱"<<"是否使用中"<<"最近登录时间");
+    QSqlQuery query(db);
+    query.exec("select * from pet_user");
+    int size = query.size();
+    ui->tableWidget->setRowCount(size);
+    QStringList user_list;
+    uint8_t row = 0;
+    while(query.next())
+    {
+        for(uint8_t col=0;col<6;col++)
+        {
+            user_list << query.value(col).toString();
+        }
+        for (uint8_t col=0;col<6;col++) {
+            ui->tableWidget->setItem(row,col,new QTableWidgetItem(user_list[col]));
+            ui->tableWidget->item(row,col)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        }
+        user_list.clear();
+        row++;
+    }
+    for(int8_t i=0;i<=4;i++)
+    {
+        ui->tableWidget->horizontalHeader()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
+    }
+}
+
+void MainWindow::drop_user(QString& name)
+{
+    QSqlQuery query(db);
+    query.exec(QString("DELETE FROM pet_user WHERE Uname = '%1'").arg(name));
 }
 void MainWindow::receive_login()
 {

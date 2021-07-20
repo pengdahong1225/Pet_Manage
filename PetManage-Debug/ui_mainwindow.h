@@ -115,6 +115,7 @@ public:
     QPushButton *pbn_delete;
     QLineEdit *lineEdit_search;
     QPushButton *pbn_edit;
+    QPushButton *pbn_falsh;
     QStatusBar *statusBar;
     QMenuBar *menuBar;
 
@@ -588,6 +589,11 @@ public:
         pbn_edit->setGeometry(QRect(250, 30, 101, 41));
         pbn_edit->setFont(font2);
         pbn_edit->setCursor(QCursor(Qt::PointingHandCursor));
+        pbn_falsh = new QPushButton(groupBox_11);
+        pbn_falsh->setObjectName(QString::fromUtf8("pbn_falsh"));
+        pbn_falsh->setGeometry(QRect(370, 30, 101, 41));
+        pbn_falsh->setFont(font2);
+        pbn_falsh->setCursor(QCursor(Qt::PointingHandCursor));
         stackedWidget->addWidget(page_6);
         MainWindow->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(MainWindow);
@@ -601,7 +607,7 @@ public:
         retranslateUi(MainWindow);
 
         pbn_temperature->setDefault(false);
-        stackedWidget->setCurrentIndex(1);
+        stackedWidget->setCurrentIndex(6);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -704,6 +710,7 @@ public:
         pbn_delete->setText(QApplication::translate("MainWindow", "\345\210\240\351\231\244", nullptr));
         lineEdit_search->setText(QString());
         pbn_edit->setText(QApplication::translate("MainWindow", "\347\274\226\350\276\221", nullptr));
+        pbn_falsh->setText(QApplication::translate("MainWindow", "\345\210\267\346\226\260", nullptr));
     } // retranslateUi
 
 };

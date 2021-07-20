@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[16];
-    char stringdata0[173];
+    QByteArrayData data[18];
+    char stringdata0[197];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -46,14 +46,17 @@ QT_MOC_LITERAL(11, 117, 15), // "Init_CustManage"
 QT_MOC_LITERAL(12, 133, 8), // "add_user"
 QT_MOC_LITERAL(13, 142, 11), // "delete_user"
 QT_MOC_LITERAL(14, 154, 9), // "edit_user"
-QT_MOC_LITERAL(15, 164, 8) // "Load_New"
+QT_MOC_LITERAL(15, 164, 10), // "flash_user"
+QT_MOC_LITERAL(16, 175, 8), // "Load_New"
+QT_MOC_LITERAL(17, 184, 12) // "close_Editor"
 
     },
     "MainWindow\0close_signal\0\0receive_login\0"
     "set_stack\0page\0OpenVideo\0finishedThreadBtnSlot\0"
     "recevie_ok\0image\0history_video\0"
     "Init_CustManage\0add_user\0delete_user\0"
-    "edit_user\0Load_New"
+    "edit_user\0flash_user\0Load_New\0"
+    "close_Editor"
 };
 #undef QT_MOC_LITERAL
 
@@ -63,7 +66,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      14,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -71,20 +74,22 @@ static const uint qt_meta_data_MainWindow[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   74,    2, 0x06 /* Public */,
+       1,    0,   84,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       3,    0,   75,    2, 0x0a /* Public */,
-       4,    1,   76,    2, 0x0a /* Public */,
-       6,    0,   79,    2, 0x0a /* Public */,
-       7,    0,   80,    2, 0x0a /* Public */,
-       8,    1,   81,    2, 0x0a /* Public */,
-      10,    0,   84,    2, 0x0a /* Public */,
-      11,    0,   85,    2, 0x0a /* Public */,
-      12,    0,   86,    2, 0x0a /* Public */,
-      13,    0,   87,    2, 0x0a /* Public */,
-      14,    0,   88,    2, 0x0a /* Public */,
-      15,    0,   89,    2, 0x0a /* Public */,
+       3,    0,   85,    2, 0x0a /* Public */,
+       4,    1,   86,    2, 0x0a /* Public */,
+       6,    0,   89,    2, 0x0a /* Public */,
+       7,    0,   90,    2, 0x0a /* Public */,
+       8,    1,   91,    2, 0x0a /* Public */,
+      10,    0,   94,    2, 0x0a /* Public */,
+      11,    0,   95,    2, 0x0a /* Public */,
+      12,    0,   96,    2, 0x0a /* Public */,
+      13,    0,   97,    2, 0x0a /* Public */,
+      14,    0,   98,    2, 0x0a /* Public */,
+      15,    0,   99,    2, 0x0a /* Public */,
+      16,    0,  100,    2, 0x0a /* Public */,
+      17,    0,  101,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -95,6 +100,8 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QImage,    9,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -122,7 +129,9 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 8: _t->add_user(); break;
         case 9: _t->delete_user(); break;
         case 10: _t->edit_user(); break;
-        case 11: _t->Load_New(); break;
+        case 11: _t->flash_user(); break;
+        case 12: _t->Load_New(); break;
+        case 13: _t->close_Editor(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -166,13 +175,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 14;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 14)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 12;
+        _id -= 14;
     }
     return _id;
 }
